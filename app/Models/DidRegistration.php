@@ -26,4 +26,9 @@ class DidRegistration extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function college()
+    {
+        return $this->belongsTo(College::class);
+    }
+
 }

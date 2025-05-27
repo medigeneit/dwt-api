@@ -123,7 +123,7 @@ Route::prefix('about-us')
 
 Route::prefix('did')->group(function () {
     Route::post('/register', [DidRegistrationController::class, 'store']);
-    Route::put('/register/{id}', [DidRegistrationController::class, 'update']);
+    Route::put('/register/{didRegistration}', [DidRegistrationController::class, 'update']);
     Route::get('/all', [DidRegistrationController::class, 'index']);
     Route::get('/{didRegistration}', [DidRegistrationController::class, 'show']);
 });

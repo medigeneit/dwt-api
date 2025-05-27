@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\DidRegistration;
 use App\Http\Requests\StoreDidRegistrationRequest;
+use App\Models\College;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
@@ -56,16 +58,45 @@ class DidRegistrationController extends Controller
         return response()->json($didRegistration);
     }
 
-    public function update(Request $request, DidRegistration $didRegistration)
+    public function update(DidRegistration $didRegistration)
     {
-        return
-        $data = $request;
+        $didRegistration->load('college');
 
-        $didRegistration->update($data);
-        
+        $didNumber = $this->generateDID($didRegistration);
+
+        $didRegistration->did_number = $didNumber;
+
+        $didRegistration->save();
+
         return response()->json([
             'message' => 'Registration updated successfully.',
             'data'    => $didRegistration,
         ]);
     }
+
+    public function generateDID($profile)
+    {
+        $prefix = '1';
+        
+        $collegeCode = $profile->college->code ?? '000';
+
+        $session = $profile->session;
+
+        $sessionCode = '000';
+
+        if ($session && preg_match('/\d{4}-\d{4}/', $session)) {
+            $parts = explode('-', $session);
+            $sessionCode = substr($parts[0], -3); // 2013-2014 → 014
+        }
+
+        $serial = DidRegistration::where('college_id', $profile->college_id)
+                        ->where('session', $profile->session)
+                        ->where('batch', $profile->batch)
+                        ->count() + 1;
+
+        $serialFormatted = str_pad($serial, 3, '0', STR_PAD_LEFT); // 001, 002...
+
+        return "{$prefix}_{$collegeCode}_{$sessionCode}_{$serialFormatted}";
+    }
+
 }
