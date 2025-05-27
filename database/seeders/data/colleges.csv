@@ -1,0 +1,13 @@
+code,name,university,location,ownership_type,institute_type,status
+001,"Armed Forces Medical College (AFMC), Dhaka",BUP,Dhaka Cantonment,govt,medical,active
+002,Army Medical College Bogra (AMCB),BUP,Bogra Cantonment,govt,medical,active
+003,Army Medical College Chittagong (AMCC),BUP,Chittagong Cantonment,govt,medical,active
+004,Army Medical College Cumilla (AMCCu),BUP,Comilla Cantonment,govt,medical,active
+005,Army Medical College Jessore (AMCJ),BUP,Jessore Cantonment,govt,medical,active
+006,Army Medical College Rangpur (RAMC),BUP,Rangpur Cantonment,govt,medical,active
+101,Dhaka Medical College (DMC),DU,Dhaka,govt,medical,active
+102,Sir Salimullah Medical College (SSMC),DU,Dhaka,govt,medical,active
+301,Ibrahim Medical College (IMC),DU,Dhaka,private,medical,active
+302,Holy Family Red Crescent Medical College (HFRCMC),DU,Dhaka,private,medical,active
+601,Dhaka Dental College (DDC),DU,Dhaka,govt,dental,active
+801,"Ibrahim Medical College, Dental Unit (IMC)",DU,Dhaka,private,dental,active
