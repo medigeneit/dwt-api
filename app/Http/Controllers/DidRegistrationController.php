@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DidRegistration;
 use App\Http\Requests\StoreDidRegistrationRequest;
 use App\Models\College;
+use App\Models\OTP;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -18,20 +19,25 @@ class DidRegistrationController extends Controller
             $data = $request->validated();
 
             // Extract possible email or phone
-            $identifier = $data['phone_email'];
+
+            $email = $data['email'];
+
+            $phone = $data['phone'];
             
             // Try to find existing user
-            $user = User::where('email', $identifier)
-                        ->orWhere('phone', $identifier)
+            $user = User::where('email', $email)
+                        ->orWhere('phone',  $phone)
                         ->first();
+
+            $code = rand(100000, 999999);
 
             // If user doesn't exist, create one
             if (!$user) {
                 $user = User::create([
                     'name'     => $data['name'],
-                    'email'    => filter_var($identifier, FILTER_VALIDATE_EMAIL) ? $identifier : null,
-                    'phone'    => preg_match('/^[0-9\+]+$/', $identifier) ? $identifier : null,
-                    'password' => Hash::make('123456'), // Default password
+                    'email'    =>  $email ?: null,
+                    'phone'    =>  $phone ?: null ,
+                    'password' => Hash::make($code), // Default password
                 ]);
             }
 
@@ -41,20 +47,27 @@ class DidRegistrationController extends Controller
                 'user_id' => $user->id,
             ]);
 
+            // Send OTP to phone (if phone available)
+            if ($user->phone) {
+                $otp = $this->generateAndSendOtp($user->phone, $code);
+            }
+
             return response()->json([
-                'message' => 'Registration successful.',
+                'message' => 'Registration successful. OTP sent if phone provided.',
                 'data'    => $registration,
             ], 201);
     }
 
     public function index()
     {
-        $registrations = DidRegistration::with('user')->latest()->paginate(20);
+        $registrations = DidRegistration::with('user', 'college')->latest()->paginate(20);
         return response()->json($registrations);
     }
 
     public function show(DidRegistration $didRegistration)
     {
+        $didRegistration->load('user', 'college');
+        
         return response()->json($didRegistration);
     }
 
@@ -89,14 +102,54 @@ class DidRegistrationController extends Controller
             $sessionCode = substr($parts[0], -3); // 2013-2014 → 014
         }
 
-        $serial = DidRegistration::where('college_id', $profile->college_id)
-                        ->where('session', $profile->session)
-                        ->where('batch', $profile->batch)
-                        ->count() + 1;
+        $serial = DidRegistration::whereNotNull('did_number')->count() + 1;
+
+        // $serial = DidRegistration::where('college_id', $profile->college_id)
+        //                 ->where('session', $profile->session)
+        //                 ->where('batch', $profile->batch)
+        //                 ->count() + 1;
 
         $serialFormatted = str_pad($serial, 3, '0', STR_PAD_LEFT); // 001, 002...
 
         return "{$prefix}_{$collegeCode}_{$sessionCode}_{$serialFormatted}";
     }
+
+    public function destroy(DidRegistration $didRegistration)
+    {
+        try {
+            $didRegistration->delete();
+
+            return response()->json([
+                'message' => 'DID Registration deleted successfully.',
+                'success' => true,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete the DID Registration.',
+                'error' => $e->getMessage(),
+                'success' => false,
+            ], 500);
+        }
+    }
+    
+    protected function generateAndSendOtp(string $phone, $code): string
+    {
+        
+
+        // Save to database (Optional: expire after 5 mins)
+        OTP::updateOrCreate(
+            ['phone' => $phone],
+            ['code' => $code, 'expires_at' => now()->addMinutes(5)]
+        );
+
+        // Send via SMS API (example only — replace with your real API)
+        // Http::post('https://your-sms-api.com/send', [
+        //     'to'   => $phone,
+        //     'text' => "Your OTP is: $code",
+        // ]);
+
+        return $code;
+    }
+
 
 }

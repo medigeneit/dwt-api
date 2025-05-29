@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('donors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->enum('type', ['supreme', 'elite', 'premium', 'standard', 'basic']);
-            $table->enum('donation_type', ['trust_fund', 'campaign', 'case_specific']);
+            $table->enum('donation_type', ['one-time', 'monthly']);
             $table->decimal('amount', 10, 2);
             $table->string('ssl_transaction_id')->nullable();
             $table->enum('status', ['pending', 'confirmed', 'failed'])->default('pending');

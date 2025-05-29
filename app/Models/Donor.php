@@ -11,7 +11,8 @@ class Donor extends Model
 
     protected $fillable = [
         'user_id',
-        'type',
+        'category_id',
+        'category_type',
         'donation_type',
         'amount',
         'ssl_transaction_id',

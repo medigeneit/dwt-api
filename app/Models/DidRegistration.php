@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DidRegistration extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'birth_date',
@@ -19,6 +22,10 @@ class DidRegistration extends Model
         'nationality',
         'present_address',
         'permanent_address',
+        'roll',
+        'nid',
+        'bmdc',
+        'facebook_link'
     ];
 
     public function user()

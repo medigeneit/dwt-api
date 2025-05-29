@@ -23,7 +23,8 @@ class StoreDidRegistrationRequest extends FormRequest
     {
          return [
             'name'          => 'required|string|max:255',
-            'phone_email'   => 'required|string',
+            'email'         => 'required|string',
+            'phone'         => 'required',
             'birth_date'    => 'required|date',
             'father_name'   => 'required|string|max:255',
             'mother_name'   => 'required|string|max:255',
@@ -35,6 +36,10 @@ class StoreDidRegistrationRequest extends FormRequest
             'nationality'   => 'nullable|string|max:100',
             'present_address'   => 'nullable|string',
             'permanent_address' => 'nullable|string',
+            'roll'          => 'nullable|string',
+            'nid'           => 'nullable|string',
+            'bmdc'          => 'nullable|string',
+            'facebook_link' => 'nullable|string',
         ];
     }
 }

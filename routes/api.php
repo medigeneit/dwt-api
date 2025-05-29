@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DesignationController;
+use App\Http\Controllers\DonorMemberController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProfileController;
@@ -30,7 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::prefix('profiles')->controller(ProfileController::class)->group(function () {
+Route::middleware(['auth:sanctum'])
+    ->prefix('profiles')->controller(ProfileController::class)->group(function () {
     Route::get('/', 'index');
     Route::post('/', 'store');
     Route::get('/{id}/edit', 'edit');
@@ -39,7 +41,13 @@ Route::prefix('profiles')->controller(ProfileController::class)->group(function 
 });
 
 Route::post('/designations', [DesignationController::class, 'store']);
+Route::get('/donations', [DonationController::class, 'index']);
 Route::post('/donations', [DonationController::class, 'store']);
+
+Route::post('/donor-members', [DonorMemberController::class, 'store']);
+Route::get('/admin/donor-members', [DonorMemberController::class, 'index']);
+Route::get('/admin/donor-members/{id}', [DonorMemberController::class, 'show']);
+
 
 Route::get('/donors', [DonationController::class, 'index'])
 ->middleware(['auth:sanctum', 'isAdmin']);
@@ -126,6 +134,7 @@ Route::prefix('did')->group(function () {
     Route::put('/register/{didRegistration}', [DidRegistrationController::class, 'update']);
     Route::get('/all', [DidRegistrationController::class, 'index']);
     Route::get('/{didRegistration}', [DidRegistrationController::class, 'show']);
+    Route::delete('/{didRegistration}', [DidRegistrationController::class, 'destroy']);
 });
 
 Route::get('colleges', [CollegeController::class, 'index']);

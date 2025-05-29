@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProfileRequest;
 use App\Http\Resources\ProfileResource;
+use App\Models\DidRegistration;
+use App\Models\Donor;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,7 +16,16 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        return response()->json(Profile::with(['user', 'college'])->paginate(20));
+         $userId = auth()->user()->id;
+
+        $did_register = DidRegistration::where('user_id', $userId)->first();
+
+        $donations = Donor::where('user_id', $userId)->get();
+
+        return response()->json([
+            'did_registration' => $did_register,
+            'donations' => $donations,
+        ]);
     }
 
     public function store(StoreProfileRequest $request)
@@ -60,6 +72,7 @@ class ProfileController extends Controller
             DB::beginTransaction();
 
             $profile = Profile::findOrFail($id);
+            
             $data = $request->validated();
 
             if ($request->hasFile('image')) {
