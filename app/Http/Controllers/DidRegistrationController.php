@@ -16,46 +16,41 @@ class DidRegistrationController extends Controller
 {
     public function store(StoreDidRegistrationRequest $request)
     {
-            $data = $request->validated();
+        $data = $request->validated();
 
-            // Extract possible email or phone
+        $email = $data['email'];
+        $phone = $data['phone'];
 
-            $email = $data['email'];
+        $user = User::where('email', $email)
+                    ->orWhere('phone', $phone)
+                    ->first();
 
-            $phone = $data['phone'];
-            
-            // Try to find existing user
-            $user = User::where('email', $email)
-                        ->orWhere('phone',  $phone)
-                        ->first();
+        $code = rand(100000, 999999);
 
-            $code = rand(100000, 999999);
-
-            // If user doesn't exist, create one
-            if (!$user) {
-                $user = User::create([
-                    'name'     => $data['name'],
-                    'email'    =>  $email ?: null,
-                    'phone'    =>  $phone ?: null ,
-                    'password' => Hash::make($code), // Default password
-                ]);
-            }
-
-            // Create registration
-            $registration = DidRegistration::create([
-                ...$data,
-                'user_id' => $user->id,
+        if (!$user) {
+            $user = User::create([
+                'name'     => $data['name'],
+                'email'    => $email ?: null,
+                'phone'    => $phone ?: null,
+                'password' => Hash::make($code),
             ]);
+        }
 
-            // Send OTP to phone (if phone available)
-            if ($user->phone) {
-                $otp = $this->generateAndSendOtp($user->phone, $code);
-            }
+        // ✅ Create or update DidRegistration
+        $registration = DidRegistration::updateOrCreate(
+            ['user_id' => $user->id],
+            [...$data, 'user_id' => $user->id]
+        );
 
-            return response()->json([
-                'message' => 'Registration successful. OTP sent if phone provided.',
-                'data'    => $registration,
-            ], 201);
+        // Send OTP
+        if ($user->phone) {
+            $otp = $this->generateAndSendOtp($user->phone, $code);
+        }
+
+        return response()->json([
+            'message' => 'Registration successful. OTP sent if phone provided.',
+            'data' => $registration,
+        ], 201);
     }
 
     public function index()
