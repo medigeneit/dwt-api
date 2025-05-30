@@ -37,19 +37,22 @@ class DidRegistrationController extends Controller
         }
 
         // ✅ Create or update DidRegistration
+        
         $registration = DidRegistration::updateOrCreate(
             ['user_id' => $user->id],
             [...$data, 'user_id' => $user->id]
         );
 
         // Send OTP
-        if ($user->phone) {
-            $otp = $this->generateAndSendOtp($user->phone, $code);
+
+        if ($user->phone || $phone) {
+            $userPhone = $user->phone || $phone;
+            $this->generateAndSendOtp($userPhone, $code);
         }
 
         return response()->json([
             'message' => 'Registration successful. OTP sent if phone provided.',
-            'data' => $registration,
+            // 'data' => $registration,
         ], 201);
     }
 
