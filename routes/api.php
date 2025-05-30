@@ -31,6 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
+// routes/api.php
+Route::post('/import-medical-colleges', [CollegeController::class, 'import']);
+
+
 Route::middleware(['auth:sanctum'])
     ->prefix('profiles')->controller(ProfileController::class)->group(function () {
     Route::get('/', 'index');

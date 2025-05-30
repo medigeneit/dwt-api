@@ -8,13 +8,9 @@ class College extends Model
 {
      protected $fillable = [
         'name',
-        'nickname',
         'code',
-        'ownership_type',
         'university',
-        'institute_type',
         'location',
-        'status',
     ];
     
     public function designations()
