@@ -11,6 +11,7 @@ class College extends Model
         'code',
         'university',
         'location',
+        'status'
     ];
     
     public function designations()
