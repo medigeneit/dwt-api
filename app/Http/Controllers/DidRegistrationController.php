@@ -109,7 +109,7 @@ class DidRegistrationController extends Controller
 
         $serialFormatted = str_pad($serial, 3, '0', STR_PAD_LEFT); // 001, 002...
 
-        return "{$prefix}_{$collegeCode}_{$sessionCode}_{$serialFormatted}";
+        return "{$prefix}{$collegeCode}{$sessionCode}{$serialFormatted}";
     }
 
     public function destroy(DidRegistration $didRegistration)
