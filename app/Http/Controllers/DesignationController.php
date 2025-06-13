@@ -21,6 +21,7 @@ class DesignationController extends Controller
             DB::beginTransaction();
 
             $data = $request->validated();
+
             $designation = Designation::create($data);
 
             DB::commit();
@@ -38,7 +39,6 @@ class DesignationController extends Controller
             ], 500);
         }
     }
-
     public function edit($id)
     {
         return response()->json(Designation::with(['user', 'college'])->findOrFail($id));

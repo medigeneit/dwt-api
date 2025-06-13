@@ -22,15 +22,18 @@ class StoreDesignationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            'did_register_id' => 'nullable|exists:did_registrations,id',
             'type' => 'required|string|max:50',
             'zone' => 'nullable|string|max:100',
             'college_id' => 'nullable|exists:colleges,id',
-            'division' => 'nullable|string|max:100',
             'district' => 'nullable|string|max:100',
             'upazila' => 'nullable|string|max:100',
             'hospital_or_institute_name' => 'nullable|string|max:255',
-            'image' => 'nullable|image|max:2048',
+            'class_grade' => 'nullable|string|max:255',
+            'alternate_phone' => 'nullable|string|max:30',
+            'skill_expertise' => 'required|string',
+            'description' => 'required|string',
+            'previous_experience' => 'required|string',
         ];
     }
 }
