@@ -5,6 +5,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\DonorMemberController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
@@ -44,8 +45,15 @@ Route::middleware(['auth:sanctum'])
     Route::delete('/{id}', 'destroy');
 });
 
+Route::get('/divisions', [LocationController::class, 'divisions']);
+Route::get('/districts', [LocationController::class, 'districts']);
+Route::get('/upazilas/{districtId}', [LocationController::class, 'upazilas']);
+
+
 Route::post('/designations', [DesignationController::class, 'store']);
+
 Route::get('/donations', [DonationController::class, 'index']);
+
 Route::post('/donations', [DonationController::class, 'store']);
 
 Route::post('/donor-members', [DonorMemberController::class, 'store']);
@@ -142,3 +150,5 @@ Route::prefix('did')->group(function () {
 });
 
 Route::get('colleges', [CollegeController::class, 'index']);
+
+Route::get('did-register', [DidRegistrationController::class, 'searchByDid']);

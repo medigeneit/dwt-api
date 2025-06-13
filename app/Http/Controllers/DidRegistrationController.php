@@ -62,6 +62,25 @@ class DidRegistrationController extends Controller
         return response()->json($registrations);
     }
 
+    public function searchByDid(){
+        
+        $didNumber = Request::input('did_number');
+        
+        if (!$didNumber) {
+            return response()->json(['message' => 'DID number is required'], 400);
+        }
+
+        $registration = DidRegistration::where('did_number', $didNumber)
+                                       ->with('user', 'college')
+                                       ->first();
+
+        if (!$registration) {
+            return response()->json(['message' => 'DID Registration not found'], 404);
+        }
+
+        return response()->json($registration);
+    }
+
     public function show(DidRegistration $didRegistration)
     {
         $didRegistration->load('user', 'college');
