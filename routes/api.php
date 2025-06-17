@@ -51,6 +51,9 @@ Route::get('/upazilas/{districtId}', [LocationController::class, 'upazilas']);
 
 
 Route::post('/designations', [DesignationController::class, 'store']);
+Route::get('/designations/ambassadors', [DesignationController::class, 'getAmbassadors']);
+Route::get('/designations/coordinators', [DesignationController::class, 'getCoordinators']);
+Route::post('/designations', [DesignationController::class, 'store']);
 
 Route::get('/donations', [DonationController::class, 'index']);
 

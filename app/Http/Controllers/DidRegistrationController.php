@@ -92,11 +92,27 @@ class DidRegistrationController extends Controller
     {
         $didRegistration->load('college');
 
+        // যদি আগে থেকেই DID থাকে, তাহলে কিছু না করেই রিটার্ন
+        if (!empty($didRegistration->did_number)) {
+            return response()->json([
+                'message' => 'DID number already exists. No changes made.',
+                'data'    => $didRegistration,
+            ]);
+        }
+
         $didNumber = $this->generateDID($didRegistration);
 
         $didRegistration->did_number = $didNumber;
 
         $didRegistration->save();
+
+        $phone = $didRegistration->user->phone;
+
+       if ($phone) {
+            $message = "🎉 Congratulations! Your DID Number has been generated.\n\nDID Number: {$didNumber}\n\nUse this number for all official verification purposes.";
+            $event = 'DID-GENERATED';
+            $this->sendSMS($phone, $message, $event);
+        }
 
         return response()->json([
             'message' => 'Registration updated successfully.',

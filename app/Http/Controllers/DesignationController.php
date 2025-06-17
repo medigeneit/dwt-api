@@ -76,4 +76,46 @@ class DesignationController extends Controller
         Designation::findOrFail($id)->delete();
         return response()->json(['message' => 'Designation deleted successfully']);
     }
+
+    public function getAmbassadors()
+    {
+        $ambassadors = $this->getByDesignationType('ambassador');
+
+        if (!$ambassadors) {
+            return response()->json(['message' => 'Invalid designation type.'], 422);
+        }
+
+        return response()->json([
+            'data' => DesignationResource::collection($ambassadors) 
+        ]);
+    }
+
+    public function getCoordinators()
+    {
+        $coordinators = $this->getByDesignationType('coordinator');
+
+        if (!$coordinators) {
+            return response()->json(['message' => 'Invalid designation type.'], 422);
+        }
+
+        return response()->json([
+            'data' => DesignationResource::collection($coordinators)
+        ]);
+    }
+
+    public function getByDesignationType($type)
+    {
+        $map = [
+            'ambassador' => ['batch_ambassador', 'college_ambassador', 'zone_ambassador'],
+            'coordinator' => ['divisional_coordinator', 'district_coordinator', 'upazila_coordinator', 'institutional_coordinator'],
+        ];
+
+        if (!isset($map[$type])) {
+            return null;
+        }
+
+        return Designation::whereIn('type', $map[$type])->get();
+    }
+
+
 }
