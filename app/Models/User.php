@@ -37,6 +37,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(DidRegistration::class);
     }
+    public function didRegistration()
+    {
+        return $this->hasOne(DidRegistration::class);
+    }
 
 
 }

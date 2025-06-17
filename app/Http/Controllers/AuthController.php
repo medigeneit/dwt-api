@@ -66,6 +66,13 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+
+        $hasDID = $user->didRegistration()->exists();
+
+        return response()->json([
+            ...$user->toArray(),
+            'hasDID' => $hasDID,
+        ]);
     }
 }
