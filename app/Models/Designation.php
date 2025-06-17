@@ -10,27 +10,48 @@ class Designation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'did_number',
         'type',
-        'college_id',
         'zone',
-        'division',
-        'district',
-        'upazila',
+        'permanent_district_id',
+        'permanent_upazila_id',
+        'current_upazila_id',
+        'current_district_id',
         'hospital_or_institute_name',
+        'work_experience',
+        'class_grade',
+        'alternate_phone',
+        'skill_expertise',
+        'description',
     ];
 
-    /**
-     * Relationships
-     */
-
-    public function user()
+     // 🔗 DID registration relation
+    public function didRegistration()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(DidRegistration::class , 'did_number', 'did_number');
     }
 
-    public function college()
+    // 🔗 Permanent District
+    public function permanentDistrict()
     {
-        return $this->belongsTo(College::class);
+        return $this->belongsTo(District::class, 'permanent_district_id');
+    }
+
+    // 🔗 Permanent Upazila
+    public function permanentUpazila()
+    {
+        return $this->belongsTo(Upazila::class, 'permanent_upazila_id');
+    }
+
+    // 🔗 Current District
+    public function currentDistrict()
+    {
+        return $this->belongsTo(District::class, 'current_district_id');
+    }
+
+    // 🔗 Current Upazila
+    public function currentUpazila()
+    {
+        return $this->belongsTo(Upazila::class, 'current_upazila_id');
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreDesignationRequest;
 use App\Http\Requests\UpdateDesignationRequest;
 use App\Http\Resources\DesignationResource;
 use App\Models\Designation;
+use App\Models\DidRegistration;
 use Illuminate\Support\Facades\DB;
 
 class DesignationController extends Controller
@@ -20,8 +21,10 @@ class DesignationController extends Controller
         try {
             DB::beginTransaction();
 
+            // 2. Get all validated data
             $data = $request->validated();
-
+            
+            // 4. Create record
             $designation = Designation::create($data);
 
             DB::commit();
