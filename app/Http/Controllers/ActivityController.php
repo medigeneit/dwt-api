@@ -23,16 +23,16 @@ class ActivityController extends Controller
 
     public function store(StoreActivityRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255|unique:activities,title',
-            'description' => 'nullable|string',
-            'location' => 'nullable|string|max:255',
-            'activity_date' => 'nullable|date',
-            'photo' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
-        ]);
 
-        $activity = Activity::create($request->all());
+        
+        $data = $request->validated();
+
+        // Handle photo upload if exists
+        // if ($request->hasFile('photo')) {
+        //     $data['photo'] = $request->file('photo')->store('activities', 'public');
+        // }
+
+        $activity = Activity::create($data);
 
         return response()->json([
             'message' => 'Activity created successfully',
@@ -42,14 +42,17 @@ class ActivityController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|in:active,inactive',
+         $request->validate([
+            'title'         => 'required|string|max:255|unique:activities,title,' . $id,
+            'category'      => 'required|string',
+            'description'   => 'required|string',
+            'location'      => 'nullable|string|max:255',
+            'activity_date' => 'nullable|date',
+            'photo'         => 'nullable',
+            'status'        => 'required|in:active,inactive',
         ]);
 
         $activity = Activity::findOrFail($id);
-
         $activity->update($request->all());
 
         return response()->json([

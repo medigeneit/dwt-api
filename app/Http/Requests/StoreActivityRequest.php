@@ -22,13 +22,14 @@ class StoreActivityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255|unique:activities,title',
-            'description' => 'nullable|string',
-            'location' => 'nullable|string|max:255',
-            'activity_date' => 'nullable|date',
-            'photo' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
-        ];
+        'title'         => 'required|string|max:255|unique:activities,title',
+        'category'      => 'required|string', 
+        'description'   => 'required|string',
+        'location'      => 'nullable|string|max:255',
+        'activity_date' => 'nullable|date',
+        'photo'         => 'nullable',
+        'status'        => 'required|in:active,inactive',
+    ];
 
     }
 }

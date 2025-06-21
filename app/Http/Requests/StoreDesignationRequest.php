@@ -35,8 +35,8 @@ class StoreDesignationRequest extends FormRequest
             'class_grade' => 'nullable|string|max:255',
             'alternate_phone' => 'nullable|string|max:30',
             'skill_expertise' => 'required|string',
-            'description' => 'required|string',
-            'work_experience' => 'required|string',
+            'description' => 'nullable|string',
+            'work_experience' => 'nullable|string',
         ];
     }
 }

@@ -18,6 +18,7 @@ class ActivityResource extends JsonResource
         return [
             'id'    => $this->id,
             'title' => $this->title,
+            'category' => $this->category,
             'slug'  => Str::slug($this->title), // ✅ slug তৈরি হচ্ছে এখানেই
             'description' => $this->description,
             'location' => $this->location,
